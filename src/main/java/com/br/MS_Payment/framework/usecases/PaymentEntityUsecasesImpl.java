@@ -29,7 +29,7 @@ public class PaymentEntityUsecasesImpl implements PaymentEntityUsecases {
 
     @KafkaListener(topics = "orders", groupId = "payment-group")
     public void receiveEvent(ReceiveOrderEvent receiveOrderEvent){
-        System.out.println("oi");
+        System.out.println("oi"+receiveOrderEvent);
     }
 
     @Override
