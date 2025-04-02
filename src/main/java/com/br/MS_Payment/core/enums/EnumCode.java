@@ -1,7 +1,8 @@
 package com.br.MS_Payment.core.enums;
 
 public enum EnumCode {
-    PAY0000("Payment Id not found in database", "PAY-0000");
+    PAY0000("Payment Id not found in database", "PAY-0000"),
+    PAY0001("Dont have balance suficient", "PAY-0001");
 
     private String message;
     private String code;

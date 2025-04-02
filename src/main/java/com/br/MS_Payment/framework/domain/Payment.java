@@ -19,10 +19,11 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of = "paymentId")
 public class Payment {
 
-    public Payment(String orderId, BigDecimal amount, Status status, PaymentMethod paymentMethod, String transactionId) {
+    public Payment(String orderId, BigDecimal amount, String email, Status status, PaymentMethod paymentMethod, String transactionId) {
         this.orderId = orderId;
         this.amount = amount;
         this.status = status;
+        this.email = email;
         this.paymentMethod = paymentMethod;
         this.transactionId = transactionId;
         this.processedAt = LocalDateTime.now();
@@ -35,6 +36,8 @@ public class Payment {
     private String orderId;
 
     private BigDecimal amount;
+
+    private String email;
 
     @Enumerated(EnumType.STRING)
     private Status status;

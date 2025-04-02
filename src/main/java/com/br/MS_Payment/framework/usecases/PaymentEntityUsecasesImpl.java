@@ -2,7 +2,10 @@ package com.br.MS_Payment.framework.usecases;
 
 import com.br.MS_Payment.core.entity.PaymentEntity;
 import com.br.MS_Payment.core.enums.EnumCode;
+import com.br.MS_Payment.core.enums.PaymentMethod;
+import com.br.MS_Payment.core.enums.Status;
 import com.br.MS_Payment.core.exceptions.PaymentIdNotFound;
+import com.br.MS_Payment.core.exceptions.PaymentNotAllowed;
 import com.br.MS_Payment.core.usecases.PaymentEntityUsecases;
 import com.br.MS_Payment.framework.domain.Payment;
 import com.br.MS_Payment.framework.dto.ReceiveOrderEvent;
@@ -11,6 +14,9 @@ import com.br.MS_Payment.framework.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 public class PaymentEntityUsecasesImpl implements PaymentEntityUsecases {
@@ -29,7 +35,19 @@ public class PaymentEntityUsecasesImpl implements PaymentEntityUsecases {
 
     @KafkaListener(topics = "orders", groupId = "payment-group")
     public void receiveEvent(ReceiveOrderEvent receiveOrderEvent){
-        System.out.println("oi"+receiveOrderEvent);
+        if(validatePayment(receiveOrderEvent)){
+            create(new PaymentEntity(receiveOrderEvent.getOrderId(), BigDecimal.valueOf(receiveOrderEvent.getTotalValue()), receiveOrderEvent.getEmail(),Status.APPROVED, PaymentMethod.PIX, UUID.randomUUID().toString()));
+        }else{
+            create(new PaymentEntity(receiveOrderEvent.getOrderId(), BigDecimal.valueOf(receiveOrderEvent.getTotalValue()), receiveOrderEvent.getEmail(),Status.REJECTED, PaymentMethod.PIX, UUID.randomUUID().toString()));
+        }
+    }
+
+    private boolean validatePayment(ReceiveOrderEvent receiveOrderEvent){
+        if(receiveOrderEvent.getBalance() >= receiveOrderEvent.getTotalValue()){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override

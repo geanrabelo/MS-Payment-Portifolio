@@ -3,12 +3,11 @@ package com.br.MS_Payment.framework.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-
 @Component
 public class ReceiveOrderEvent {
 
     private Double totalValue;
+    private Double balance;
     private String orderId;
     private Long customerId;
     private String eventType;
@@ -20,6 +19,14 @@ public class ReceiveOrderEvent {
     }
     public void setTotalValue(Double totalValue) {
         this.totalValue = totalValue;
+    }
+
+    @JsonProperty("balance")
+    public Double getBalance(){
+        return this.balance;
+    }
+    public void setBalance(Double balance){
+        this.balance = balance;
     }
 
     @JsonProperty("orderId")

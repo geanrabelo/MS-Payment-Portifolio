@@ -10,10 +10,11 @@ import java.util.UUID;
 public class PaymentEntity {
 
 
-    public PaymentEntity(String orderId, BigDecimal amount, Status status, PaymentMethod paymentMethod, String transactionId) {
+    public PaymentEntity(String orderId, BigDecimal amount, String email,Status status, PaymentMethod paymentMethod, String transactionId) {
         this.paymentId = UUID.randomUUID().toString();
         this.orderId = orderId;
         this.amount = amount;
+        this.email = email;
         this.status = status;
         this.paymentMethod = paymentMethod;
         this.transactionId = transactionId;
@@ -26,6 +27,7 @@ public class PaymentEntity {
     private Status status;
     private PaymentMethod paymentMethod;
     private String transactionId;
+    private String email;
     private LocalDateTime processedAt;
 
     @Override
@@ -39,6 +41,14 @@ public class PaymentEntity {
     @Override
     public int hashCode() {
         return paymentId.hashCode();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public BigDecimal getAmount() {

@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 public class PaymentMapper {
 
     public PaymentEntity toPaymentEntity(Payment payment){
-        return new PaymentEntity(payment.getOrderId(), payment.getAmount(), payment.getStatus(), payment.getPaymentMethod(), payment.getTransactionId());
+        return new PaymentEntity(payment.getOrderId(), payment.getAmount(), payment.getEmail(),payment.getStatus(), payment.getPaymentMethod(), payment.getTransactionId());
     }
 
     public Payment toPayment(PaymentEntity paymentEntity){
-        return new Payment(paymentEntity.getOrderId(), paymentEntity.getAmount(), paymentEntity.getStatus(), paymentEntity.getPaymentMethod(), paymentEntity.getTransactionId());
+        return new Payment(paymentEntity.getOrderId(), paymentEntity.getAmount(), paymentEntity.getEmail(),paymentEntity.getStatus(), paymentEntity.getPaymentMethod(), paymentEntity.getTransactionId());
     }
 }
