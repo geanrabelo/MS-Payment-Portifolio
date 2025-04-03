@@ -36,9 +36,9 @@ public class PaymentEntityUsecasesImpl implements PaymentEntityUsecases {
     @KafkaListener(topics = "orders", groupId = "payment-group")
     public void receiveEvent(ReceiveOrderEvent receiveOrderEvent){
         if(validatePayment(receiveOrderEvent)){
-            create(new PaymentEntity(receiveOrderEvent.getOrderId(), BigDecimal.valueOf(receiveOrderEvent.getTotalValue()), receiveOrderEvent.getEmail(),Status.APPROVED, PaymentMethod.PIX, UUID.randomUUID().toString()));
+            create(new PaymentEntity(receiveOrderEvent.getOrderId(), BigDecimal.valueOf(receiveOrderEvent.getTotalValue()), receiveOrderEvent.getEmail(), Status.APPROVED, PaymentMethod.method(receiveOrderEvent.getMethod()), UUID.randomUUID().toString()));
         }else{
-            create(new PaymentEntity(receiveOrderEvent.getOrderId(), BigDecimal.valueOf(receiveOrderEvent.getTotalValue()), receiveOrderEvent.getEmail(),Status.REJECTED, PaymentMethod.PIX, UUID.randomUUID().toString()));
+            create(new PaymentEntity(receiveOrderEvent.getOrderId(), BigDecimal.valueOf(receiveOrderEvent.getTotalValue()), receiveOrderEvent.getEmail(), Status.REJECTED, PaymentMethod.method(receiveOrderEvent.getMethod()), UUID.randomUUID().toString()));
         }
     }
 

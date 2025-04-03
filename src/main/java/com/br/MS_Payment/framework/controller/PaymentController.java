@@ -3,6 +3,7 @@ package com.br.MS_Payment.framework.controller;
 import com.br.MS_Payment.core.entity.PaymentEntity;
 import com.br.MS_Payment.core.usecases.PaymentEntityUsecases;
 import com.br.MS_Payment.framework.dto.PaymentEvent;
+import com.br.MS_Payment.framework.dto.PaymentMessageDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,6 @@ public class PaymentController {
         eventData.put("transactionId", paymentEntity.getTransactionId());
         eventData.put("processedAt", paymentEntity.getProcessedAt());
         kafkaTemplate.send("payments", eventData);
-        return ResponseEntity.ok("OK");
+        return ResponseEntity.ok(new PaymentMessageDTO("Payment Confirmed and send for Ms-Notify"));
     }
 }

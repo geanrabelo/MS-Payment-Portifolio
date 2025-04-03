@@ -8,6 +8,7 @@ public class ReceiveOrderEvent {
 
     private Double totalValue;
     private Double balance;
+    private int method;
     private String orderId;
     private Long customerId;
     private String eventType;
@@ -27,6 +28,14 @@ public class ReceiveOrderEvent {
     }
     public void setBalance(Double balance){
         this.balance = balance;
+    }
+
+    @JsonProperty("method")
+    public int getMethod(){
+        return this.method;
+    }
+    public void setMethod(int method){
+        this.method = method;
     }
 
     @JsonProperty("orderId")
