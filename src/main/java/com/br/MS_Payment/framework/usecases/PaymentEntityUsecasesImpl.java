@@ -41,29 +41,45 @@ public class PaymentEntityUsecasesImpl implements PaymentEntityUsecases {
     @KafkaListener(topics = "orders", groupId = "payment-group")
     public void receiveEvent(ReceiveOrderEvent receiveOrderEvent){
         if(validatePayment(receiveOrderEvent)){
-            String paymentId = create(new PaymentEntity(receiveOrderEvent.getOrderId(), BigDecimal.valueOf(receiveOrderEvent.getTotalValue()), receiveOrderEvent.getEmail(), Status.APPROVED, PaymentMethod.method(receiveOrderEvent.getMethod()), UUID.randomUUID().toString()));
-
+            String paymentId = create(PaymentEntity.PaymentBuilder.builder()
+                    .orderId(receiveOrderEvent.getOrderId())
+                    .amount(BigDecimal.valueOf(receiveOrderEvent.getTotalValue()))
+                    .email(receiveOrderEvent.getEmail())
+                    .status(Status.APPROVED)
+                    .paymentMethod(PaymentMethod.method(receiveOrderEvent.getMethod()))
+                    .transactionId(UUID.randomUUID().toString())
+                    .build());
             Payment payment = paymentRepository.findById(paymentId)
-                    .orElseThrow(() -> new RuntimeException("Payment not found"));
-            Map<String, Object> eventData = new HashMap<>();
-            eventData.put("paymentId", payment.getPaymentId());
-            eventData.put("orderId", payment.getOrderId());
-            eventData.put("amount", payment.getAmount());
-            eventData.put("email", payment.getEmail());
-            eventData.put("transactionId", payment.getTransactionId());
-            eventData.put("processedAt", payment.getProcessedAt());
-            kafkaTemplate.send("payments", eventData);
+                    .orElseThrow(() -> new PaymentIdNotFound(EnumCode.PAY0000.getMessage()));
+            createEventData(payment);
         }else{
-            create(new PaymentEntity(receiveOrderEvent.getOrderId(), BigDecimal.valueOf(receiveOrderEvent.getTotalValue()), receiveOrderEvent.getEmail(), Status.REJECTED, PaymentMethod.method(receiveOrderEvent.getMethod()), UUID.randomUUID().toString()));
+            create(PaymentEntity.PaymentBuilder.builder()
+                    .orderId(receiveOrderEvent.getOrderId())
+                    .amount(BigDecimal.valueOf(receiveOrderEvent.getTotalValue()))
+                    .email(receiveOrderEvent.getEmail())
+                    .status(Status.REJECTED)
+                    .paymentMethod(PaymentMethod.method(receiveOrderEvent.getMethod()))
+                    .transactionId(UUID.randomUUID().toString())
+                    .build());
         }
+    }
+
+    private void createEventData(Payment payment){
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("paymentId", payment.getPaymentId());
+        eventData.put("orderId", payment.getOrderId());
+        eventData.put("amount", payment.getAmount());
+        eventData.put("email", payment.getEmail());
+        eventData.put("transactionId", payment.getTransactionId());
+        eventData.put("processedAt", payment.getProcessedAt());
+        kafkaTemplate.send("payments", eventData);
     }
 
     private boolean validatePayment(ReceiveOrderEvent receiveOrderEvent){
         if(receiveOrderEvent.getBalance() >= receiveOrderEvent.getTotalValue()){
             return true;
-        }else{
-            return false;
         }
+        return false;
     }
 
     @Override

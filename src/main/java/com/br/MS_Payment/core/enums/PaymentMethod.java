@@ -2,21 +2,17 @@ package com.br.MS_Payment.core.enums;
 
 import com.br.MS_Payment.core.exceptions.PaymentMethodNotExists;
 
+import java.util.stream.Stream;
+
 public enum PaymentMethod {
     CREDIT_CARD,
     DEBIT_CARD,
     PIX;
 
-    public static PaymentMethod method(int method){
-        switch (method){
-            case 0:
-                return PaymentMethod.CREDIT_CARD;
-            case 1:
-                return PaymentMethod.DEBIT_CARD;
-            case 2:
-                return PaymentMethod.PIX;
-            default:
-                throw new PaymentMethodNotExists(EnumCode.PAY0002.getMessage());
-        }
+    public static PaymentMethod method(int method) {
+        return Stream.of(PaymentMethod.values())
+                .filter(p -> p.ordinal() == method)
+                .findAny()
+                .orElseThrow(() -> new PaymentMethodNotExists(EnumCode.PAY0000.getMessage()));
     }
 }
