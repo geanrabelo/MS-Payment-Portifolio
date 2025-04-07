@@ -5,6 +5,7 @@ import com.br.MS_Payment.core.enums.EnumCode;
 import com.br.MS_Payment.core.enums.PaymentMethod;
 import com.br.MS_Payment.core.enums.Status;
 import com.br.MS_Payment.core.exceptions.PaymentIdNotFound;
+import com.br.MS_Payment.core.exceptions.PaymentNotAllowed;
 import com.br.MS_Payment.core.usecases.PaymentEntityUsecases;
 import com.br.MS_Payment.framework.domain.Payment;
 import com.br.MS_Payment.framework.dto.ReceiveOrderEvent;
